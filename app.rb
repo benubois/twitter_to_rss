@@ -27,12 +27,12 @@ def xml(options)
     builder.updated(Time.now.iso8601.to_s)
     builder.id(ENV['TWITTER_SERVER'])
     builder.entry do |entry|
-      builder.author {|author| author.name(options[:author_name]) }
+      entry.author {|author| author.name(options[:author_name]) }
       entry.title(options[:title])
-      builder.link href: options[:href]
-      builder.published(Time.now.iso8601.to_s)
-      builder.id(options[:id])
-      builder.content(options[:content], type: 'html')
+      entry.link href: options[:href]
+      entry.published(Time.now.iso8601.to_s)
+      entry.id(options[:id])
+      entry.content(options[:content], type: 'html')
     end
   end
 end
