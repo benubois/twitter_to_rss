@@ -40,7 +40,7 @@ end
 def write_xml(status)
   author = "#{status.user.name} - @#{status.user.screen_name}"
   File.open("./public/atom.xml", 'w') do |file|
-    file.write xml(title: status.text, content: author, href: status.urls.first.expanded_url, author_name: author, id: status.id)
+    file.write xml(title: status.text, content: author, href: status.urls.first.expanded_url, author_name: author, id: status.urls.first.expanded_url)
   end
 end
 
