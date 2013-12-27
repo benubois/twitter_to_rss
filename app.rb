@@ -43,7 +43,7 @@ def write_xml(status)
     title: clean_text(status),
     content: "#{status.user.name}: #{url.host}",
     href: status.urls.first.expanded_url,
-    author_name: "#{status.user.name} (#{status.user.screen_name})",
+    author_name: "#{status.user.name} (@#{status.user.screen_name})",
     id: status.urls.first.expanded_url
   })
   File.open("./public/atom.xml", 'w') do |file|
