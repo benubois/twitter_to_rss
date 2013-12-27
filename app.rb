@@ -3,10 +3,10 @@ $stdout.sync = true
 
 require 'bundler/setup'
 require 'tweetstream'
-require 'twitter'
 require "builder"
 require "time"
 require 'net/http'
+require 'uri'
 
 TweetStream.configure do |config|
   config.consumer_key       = ENV['CONSUMER_KEY']
@@ -38,9 +38,10 @@ def xml(options)
 end
 
 def write_xml(status)
+  url = URI(status.urls.first.expanded_url)
   xml_string = xml({
     title: clean_text(status),
-    content: "#{status.user.name}: #{status.urls.first.display_url}",
+    content: "#{status.user.name}: #{url.host}",
     href: status.urls.first.expanded_url,
     author_name: "#{status.user.name} (#{status.user.screen_name})",
     id: status.urls.first.expanded_url
