@@ -38,10 +38,25 @@ def xml(options)
 end
 
 def write_xml(status)
-  author = "#{status.user.name} - @#{status.user.screen_name}"
+  xml_string = xml({
+    title: clean_text(status),
+    content: "#{status.user.name}: #{status.urls.first.display_url}",
+    href: status.urls.first.expanded_url,
+    author_name: "#{status.user.name} (#{status.user.screen_name})",
+    id: status.urls.first.expanded_url
+  })
   File.open("./public/atom.xml", 'w') do |file|
-    file.write xml(title: status.text, content: author, href: status.urls.first.expanded_url, author_name: author, id: status.urls.first.expanded_url)
+    file.write(xml_string)
   end
+end
+
+def clean_text(status)
+  tweet_text = status.text
+  url_indices = status.urls.collect {|url| url.indices }
+  url_indices.reverse.each do |indices|
+    tweet_text[Range.new(*indices)] = ''
+  end
+  tweet_text.gsub(/[\s:]*$/, '')
 end
 
 def notify_hub
@@ -54,7 +69,10 @@ end
 
 client = TweetStream::Client.new
 client.userstream do |status|
-  if  status.class == Twitter::Tweet && status.urls.any?
+  if status.class == Twitter::Tweet && status.urls.any?
+    if status.retweeted_status
+      status = status.retweeted_status
+    end
     write_xml(status)
     notify_hub
   end
